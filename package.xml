@@ -9,6 +9,7 @@
 
     <buildtool_depend>ament_cmake</buildtool_depend>
     <build_depend>ament_cmake_auto</build_depend>
+    <build_depend>pluginlib</build_depend>
 
     <depend>legged_rl_controllers</depend>
     <depend>rosbag2-storage-mcap</depend>
