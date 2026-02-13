@@ -74,7 +74,73 @@ Build the packages:
 ```bash
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelwithDebInfo --packages-up-to unitree_bringup
 colcon build --symlink-install --cmake-args -DCMAKE_BUILD_TYPE=RelwithDebInfo --packages-up-to motion_tracking_controller
-source install/setup.bash
+    source install/setup.bash
+```
+
+### Docker Installation
+
+Alternatively, you can use Docker to run this repository without installing dependencies directly on your system.
+
+#### Build the Docker Image
+
+```bash
+docker build -t motion_tracking_controller .
+```
+
+#### Run the Container
+
+For interactive use:
+
+```bash
+docker run -it --rm \
+  --network host \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  motion_tracking_controller
+```
+
+For running with a local ONNX file:
+
+```bash
+docker run -it --rm \
+  --network host \
+  -e DISPLAY=$DISPLAY \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  -v $(pwd)/your_policy.onnx:/workspace/data/policy.onnx:ro \
+  motion_tracking_controller \
+  bash -c "ros2 launch motion_tracking_controller mujoco.launch.py policy_path:=/workspace/data/policy.onnx"
+```
+
+For running with WandB (requires API key):
+
+```bash
+docker run -it --rm \
+  --network host \
+  -e DISPLAY=$DISPLAY \
+  -e WANDB_API_KEY=your_wandb_api_key \
+  -v /tmp/.X11-unix:/tmp/.X11-unix:rw \
+  motion_tracking_controller \
+  bash -c "ros2 launch motion_tracking_controller mujoco.launch.py wandb_path:=your_user/project/run_id"
+```
+
+**Note:** For X11 display forwarding, you may need to run `xhost +local:docker` on your host system before starting the container.
+
+#### Verify Installation
+
+Inside the container, you can verify the installation:
+
+```bash
+# Check ROS 2 environment
+echo $ROS_DISTRO
+
+# List installed packages
+ros2 pkg list | grep -E "(legged|unitree|motion_tracking)"
+
+# Verify workspace compilation
+ls -la /workspace/colcon_ws/install/
+
+# Test launch file
+ros2 launch motion_tracking_controller --help
 ```
 
 ## Basic Usage
