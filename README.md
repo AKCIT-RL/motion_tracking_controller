@@ -89,6 +89,25 @@ docker build -t motion_tracking_controller .
 
 #### Run the Container
 
+**Important - X11 Display Forwarding:**
+
+Before running the container (especially for MuJoCo simulation), you need to allow X11 display forwarding on your host system:
+
+```bash
+xhost +local:docker
+```
+
+This command allows Docker containers to access your X11 display server. To revoke access later, you can use:
+
+```bash
+xhost -local:docker
+```
+
+**Note:** If you encounter display-related errors, make sure:
+- Your `DISPLAY` environment variable is set (usually `:0` or `:0.0`)
+- X11 forwarding is enabled (`xhost +local:docker`)
+- The `/tmp/.X11-unix` socket is accessible
+
 For interactive use:
 
 ```bash
@@ -122,8 +141,6 @@ docker run -it --rm \
   motion_tracking_controller \
   bash -c "ros2 launch motion_tracking_controller mujoco.launch.py wandb_path:=your_user/project/run_id"
 ```
-
-**Note:** For X11 display forwarding, you may need to run `xhost +local:docker` on your host system before starting the container.
 
 #### Verify Installation
 

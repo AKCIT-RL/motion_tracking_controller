@@ -1,0 +1,13 @@
+data/
+models/
+logs/
+results/
+tmp/
+*.onnx
+*.pyc
+*.pyo
+*.pyd
+*.pyw
+*.pyz
+
+.cursor/
